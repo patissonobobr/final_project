@@ -11,7 +11,7 @@ def get_teams():
 #        subvalue=value.json()
 #        print(subvalue["id"])
 
-    url = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-01&endDate=2022-02-02"
+    url = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-01&endDate=2022-03-01"
     data = requests.get(url).json()
     days=data['dates']
 
@@ -24,6 +24,7 @@ def get_teams():
 #            print(value['date'],gamesaday['gamePk'])
             if gamesaday['venue']['name'] == "Enterprise Center":
                 print(value['date'],"||",gamesaday['gamePk'],"||",gamesaday['venue']['name'],"||",gamesaday['teams']['home']['team']['name'],"||",gamesaday['teams']['away']['team']['name'])
+#https://statsapi.web.nhl.com/api/v1/game/2021020613/boxscore/teams/away(#home)/players(#list)/ID8481580 "stats": {"skaterStats": { "timeOnIce": "15:59"
 #print(value['games'])
 
 #a_dict = {1: "one", 2: "two", 3: "three"}
