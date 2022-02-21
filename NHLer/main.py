@@ -21,12 +21,10 @@ def get_teams():
 #       print(value['games'][0]['venue']['name'])
 #        gamesaday=value['totalItems']
         for gamesaday in value['games']:
-            print(value['date'],gamesaday['gamePk'])
+#            print(value['date'],gamesaday['gamePk'])
+            if gamesaday['venue']['name'] == "Enterprise Center":
+                print(value['date'],"||",gamesaday['gamePk'],"||",gamesaday['venue']['name'],"||",gamesaday['teams']['home']['team']['name'],"||",gamesaday['teams']['away']['team']['name'])
 #print(value['games'])
-
- #   print(days)
- #   for value in days:
- #      print(data['dates'][value]['date'])
 
 #a_dict = {1: "one", 2: "two", 3: "three"}
 #keys = a_dict.keys()
