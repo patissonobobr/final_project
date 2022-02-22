@@ -11,20 +11,50 @@ def get_teams():
 #        subvalue=value.json()
 #        print(subvalue["id"])
 
-    url = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-01&endDate=2022-03-01"
-    data = requests.get(url).json()
+    data = requests.get("https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-01&endDate=2022-03-01").json()
     days=data['dates']
 
     print(type(days))
     for value in days:
-#       print(value['date'])
-#       print(value['games'][0]['venue']['name'])
-#        gamesaday=value['totalItems']
         for gamesaday in value['games']:
-#            print(value['date'],gamesaday['gamePk'])
             if gamesaday['venue']['name'] == "Enterprise Center":
                 print(value['date'],"||",gamesaday['gamePk'],"||",gamesaday['venue']['name'],"||",gamesaday['teams']['home']['team']['name'],"||",gamesaday['teams']['away']['team']['name'])
-#https://statsapi.web.nhl.com/api/v1/game/2021020613/boxscore/teams/away(#home)/players(#list)/ID8481580 "stats": {"skaterStats": { "timeOnIce": "15:59"
+
+# Список игроков
+    teamdata = requests.get("https://statsapi.web.nhl.com/api/v1/game/2021020566/boxscore").json()
+
+# Гости
+    print ('-' *25)
+    print("Гости")
+    print ('-' *25)
+    away_players = teamdata['teams']['away']['players']
+    for away_player in away_players:
+        try:
+            timeOnIce = away_players[away_player]['stats']['skaterStats']['timeOnIce']
+        except:
+            timeOnIce = 0
+        fullName = away_players[away_player]['person']['fullName']
+        print(fullName, timeOnIce)
+
+# Хозяйва
+    print ('-' *25)
+    print("Хозяйва")
+    print ('-' *25)
+    home_players = teamdata['teams']['home']['players']
+    for home_player in home_players:
+        try:
+            timeOnIce = home_players[home_player]['stats']['skaterStats']['timeOnIce']
+        except:
+            timeOnIce = 0
+        fullName = home_players[home_player]['person']['fullName']
+        print(fullName, timeOnIce)
+
+#    fullName = teamdata['teams']['away']['players']['ID8477949']['person']['fullName']
+#    timeOnIce = teamdata['teams']['away']['players']['ID8477949']['stats']['skaterStats']['timeOnIce']
+#    print(fullName,"||", timeOnIce)
+
+
+#https://statsapi.web.nhl.com/api/v1/game/2021020613/boxscore/teams/away(#home)/players(#list)/ID8481580 "stats": {"skate#rStats": { "timeOnIce": "15:59"
 #print(value['games'])
 
 #a_dict = {1: "one", 2: "two", 3: "three"}
