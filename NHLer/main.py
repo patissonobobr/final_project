@@ -8,8 +8,15 @@ def get_teams():
     for value in days:
         for gamesaday in value['games']:
             if gamesaday['venue']['name'] == "Enterprise Center":
-                print(value['date'],"||",gamesaday['gamePk'],"||",gamesaday['venue']['name'],"||",gamesaday['teams']['home']['team']['name'],"||",gamesaday['teams']['away']['team']['name'])
+                date = value['date']
                 game_id = str(gamesaday['gamePk'])
+                venue = gamesaday['venue']['name']
+                hometeam = gamesaday['teams']['home']['team']['name']
+                awayteam = gamesaday['teams']['away']['team']['name']
+                homescore = gamesaday['teams']['home']['score']
+                awayscore = gamesaday['teams']['away']['score']
+                print("-"*25)
+                print(date,"||",game_id,"||",venue,"||",hometeam,"||",homescore,"||",awayscore,"||",awayteam)
                 home_players(game_id=game_id)
                 away_players(game_id=game_id)
 
