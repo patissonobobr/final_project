@@ -1,6 +1,18 @@
 import requests
 from datetime import datetime
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
 
+main = Flask(__name__)
+main.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///NHLer1.db'
+db = SQLAlchemy(main)
+
+class gamesdb(db.Model):
+    date = db.Column(db.String(10), primary_key = True)
+    hometeam = db.Column(db.String(30))
+    awayteam = db.Column(db.String(30))
+    homescore  = db.Column(db.Integer)
+    awayscore = db.Column(db.Integer)
 
 def get_teams():
 
@@ -20,6 +32,13 @@ def get_teams():
                 print(date, "||", game_id, "||", venue, "||", hometeam, "||", homescore, "||", awayscore, "||", awayteam)
                 home_players(game_id=game_id)
                 away_players(game_id=game_id)
+                try:
+                    game = gamesdb(date=date, hometeam=hometeam, homescore=homescore, awayteam=awayteam, awayscore=awayscore)
+                    db.session.add(game)
+                    db.session.flush()
+                    db.session.commit()
+                except:
+                    print("FAILED")
 
 
 def home_players(game_id):
