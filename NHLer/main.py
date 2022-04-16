@@ -4,7 +4,7 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 main = Flask(__name__)
-main.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///NHLer1.db'
+main.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///NHLer.db'
 db = SQLAlchemy(main)
 
 class gamesdb(db.Model):
@@ -13,6 +13,18 @@ class gamesdb(db.Model):
     awayteam = db.Column(db.String(30))
     homescore  = db.Column(db.Integer)
     awayscore = db.Column(db.Integer)
+    homeplayer1 = db.Column(db.String(30))
+    homeplayer1_time = db.Column(db.String(5))
+    homeplayer2 = db.Column(db.String(30))
+    homeplayer2_time = db.Column(db.String(5))
+    homeplayer3 = db.Column(db.String(30))
+    homeplayer3_time = db.Column(db.String(5))
+    awayplayer1 = db.Column(db.String(30))
+    awayplayer1_time = db.Column(db.String(5))
+    awayplayer2 = db.Column(db.String(30))
+    awayplayer2_time = db.Column(db.String(5))
+    awayplayer3 = db.Column(db.String(30))
+    awayplayer3_time = db.Column(db.String(5))
 
 def get_teams():
 
@@ -28,34 +40,48 @@ def get_teams():
                 awayteam = gamesaday['teams']['away']['team']['name']
                 homescore = gamesaday['teams']['home']['score']
                 awayscore = gamesaday['teams']['away']['score']
-                print("-"*25)
-                print(date, "||", game_id, "||", venue, "||", hometeam, "||", homescore, "||", awayscore, "||", awayteam)
-                home_players(game_id=game_id)
-                away_players(game_id=game_id)
+#                print("-"*25)
+#                print(date, "||", game_id, "||", venue, "||", hometeam, "||", homescore, "||", awayscore, "||", awayteam)
+                homeplayerslist = home_players(game_id=game_id)
+                awayplayerslist = away_players(game_id=game_id)
                 try:
-                    game = gamesdb(date=date, hometeam=hometeam, homescore=homescore, awayteam=awayteam, awayscore=awayscore)
+                    game = gamesdb(
+                        ### game data
+                        date=date, hometeam=hometeam, homescore=homescore, awayteam=awayteam, awayscore=awayscore,
+                        ### Top3 home players
+                        homeplayer1=homeplayerslist[0][0],
+                        homeplayer1_time=homeplayerslist[0][1].strftime('%M:%S'),
+                        homeplayer2=homeplayerslist[1][0],
+                        homeplayer2_time=homeplayerslist[1][1].strftime('%M:%S'),
+                        homeplayer3=homeplayerslist[2][0],
+                        homeplayer3_time=homeplayerslist[2][1].strftime('%M:%S'),
+                        ### Top3 away players
+                        awayplayer1=awayplayerslist[0][0],
+                        awayplayer1_time=awayplayerslist[0][1].strftime('%M:%S'),
+                        awayplayer2=awayplayerslist[1][0],
+                        awayplayer2_time=awayplayerslist[1][1].strftime('%M:%S'),
+                        awayplayer3=awayplayerslist[2][0],
+                        awayplayer3_time=awayplayerslist[2][1].strftime('%M:%S')
+                    )
                     db.session.add(game)
-                    db.session.flush()
+#                   db.session.flush()
                     db.session.commit()
                 except:
-                    print("FAILED")
+                    exit("Cannot upload to DB")
 
 
 def home_players(game_id):
     teamdata = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + game_id + "/boxscore").json()
-    print('-' *25)
-    print("Хозяйва")
-    print('-' *25)
     location = "home"
-    print(top_three_players(teamdata=teamdata, location=location))
+#    print("хозяева")
+    return(top_three_players(teamdata=teamdata, location=location))
+
 
 def away_players(game_id):
     teamdata = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + game_id + "/boxscore").json()
-    print('-' *25)
-    print("Гости")
-    print('-' *25)
     location = "away"
-    print(top_three_players(teamdata=teamdata, location=location))
+#    print("гости")
+    return(top_three_players(teamdata=teamdata, location=location))
 
 
 def top_three_players(teamdata, location):
