@@ -40,7 +40,6 @@ def get_teams():
                 awayteam = gamesaday['teams']['away']['team']['name']
                 homescore = gamesaday['teams']['home']['score']
                 awayscore = gamesaday['teams']['away']['score']
-#                print("-"*25)
 #                print(date, "||", game_id, "||", venue, "||", hometeam, "||", homescore, "||", awayscore, "||", awayteam)
                 homeplayerslist = home_players(game_id=game_id)
                 awayplayerslist = away_players(game_id=game_id)
